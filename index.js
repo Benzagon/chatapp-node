@@ -1,29 +1,48 @@
+require('dotenv').config();
+
 const express = require("express");
 const app = express();
 const mysql = require("mysql2");
 
 app.use(express.json());
+const port = process.env.PORT;
+
+console.log("HOLA")
 
 const connection = mysql.createConnection({
-    host: "",
-    user: "",
-    password1: "",
-    database: "",
+    host: process.env.DATABASE_HOST,
+    user:  process.env.DATABASE_USERNAME,
+    password:  process.env.DATABASE_PASSWORD,
+    database:  process.env.DATABASE,
+    ssl: {
+        rejectUnauthorized: false,
+    },
 });
 
 connection.connect((err) => {
     if(err) {
-        console.err("Error conectándose: " + err)
+        console.error("Error conectándose: " + err)
         return;
     }
     
-    console.log("DB connected");
+    console.log("Db connected");
 });
 
 app.get("/", (req, res) => {
-    res.send("Hello World!");
+    res.send("Api running OK...");
 });
 
-app.listen(process.env.PORT, () => {
-    console.log(`App listening on port ${process.env.PORT}`)
+app.get("/users", (req, res) => {
+    connection.query("SELECT * FROM users", (err, rows) => {
+        if(err){
+            console.error("Error consultando: " + err); 
+        }
+
+        console.log(rows);
+        res.send(rows);
+    })
+})
+
+app.listen(port, () => {
+    console.log(`> app listening on port ${port}`)
 })
