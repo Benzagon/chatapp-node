@@ -3,9 +3,26 @@ require('dotenv').config();
 const express = require("express");
 const app = express();
 const mysql = require("mysql2");
+const cors = require('cors');
 
 app.use(express.json());
 const port = process.env.PORT;
+
+// https://www.section.io/engineering-education/how-to-use-cors-in-nodejs-with-express/
+const whitelist = ['http://localhost:3000']
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error())
+    }
+  }
+}
+
+app.use(cors({
+    corsOptions
+}));
 
 // const connection = mysql.createConnection({
 //     host: process.env.DATABASE_HOST,
