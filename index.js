@@ -2,7 +2,6 @@ require('dotenv').config();
 
 const express = require("express");
 const app = express();
-const mysql = require("mysql2");
 const cors = require('cors');
 
 app.use(express.json());
@@ -23,16 +22,6 @@ const corsOptions = {
 app.use(cors({
     corsOptions
 }));
-
-// const connection = mysql.createConnection({
-//     host: process.env.DATABASE_HOST,
-//     user:  process.env.DATABASE_USERNAME,
-//     password:  process.env.DATABASE_PASSWORD,
-//     database:  process.env.DATABASE,
-//     ssl: {
-//         rejectUnauthorized: false,
-//     },
-// });
 
 const { PrismaClient } = require('@prisma/client') 
 const prisma = new  PrismaClient()
