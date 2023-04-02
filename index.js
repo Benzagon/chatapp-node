@@ -81,6 +81,27 @@ app.get("/users", (req, res) => {
     getUsers().then((a) => res.send(a)).catch((e) => console.error(e));
 });
 
+app.post("/signup", (req, res) => {
+    console.log(req.body.user);
+    
+    const user = req.body.user;
+    
+    const name = user.map((e) => e.name)[0];
+    const email = user.map((e) => e.email)[0];
+    const password = user.map((e) => e.password)[0];
+    
+    createUser(name, email, password).then((a) => {
+        console.log("Created user");
+        res.json({msg: "User created"});
+
+    }).catch((e) => {
+        console.error(e);
+        res.status(500);
+        res.json({msg: "Error creating user"});
+        
+    });
+});
+
 app.listen(port, () => {
     console.log(`> app listening on port ${port}`)
 });
