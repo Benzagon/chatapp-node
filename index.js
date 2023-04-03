@@ -81,14 +81,8 @@ app.get("/users", (req, res) => {
     getUsers().then((a) => res.send(a)).catch((e) => console.error(e));
 });
 
-app.post("/signup", (req, res) => {
-    console.log(req.body.user);
-    
-    const user = req.body.user;
-    
-    const name = user.map((e) => e.name)[0];
-    const email = user.map((e) => e.email)[0];
-    const password = user.map((e) => e.password)[0];
+app.post("/signup", (req, res) => {    
+    const {name, email, password} = req.body;
     
     createUser(name, email, password).then((a) => {
         console.log("Created user");
@@ -103,10 +97,7 @@ app.post("/signup", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-    const user = req.body.user;
-
-    const email = user.map((e) => e.email)[0];
-    const password = user.map((e) => e.password)[0];
+    const {email, password} = req.body;
 
     getUserByEmail(email).then((a) => {
         if(a != null){
