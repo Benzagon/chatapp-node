@@ -7,7 +7,6 @@ const cors = require('cors');
 app.use(express.json());
 const port = process.env.PORT;
 
-// https://www.section.io/engineering-education/how-to-use-cors-in-nodejs-with-express/
 const whitelist = ['http://localhost:3000']
 const corsOptions = {
   origin: (origin, callback) => {
@@ -56,11 +55,23 @@ async function getUsers() {
     return users;
 };
 
+async function getUserByEmail(email) {
+    const user = await prisma.user.findUnique({
+        where: {
+            email: email
+        }
+    });
+    //Como puedo hacer que tire error?
+    return user;
+}
+
 //createUser("Nai", "nai@gmail.com", "nailope").then((a) => console.log("Created user")).catch((e) => console.error(e));
 
 //deleteUser(2).then((a) => console.log(a)).catch((e) => console.error(e));
 
 //getUsers().then((a) => console.log(a)).catch((e) => console.error(e));
+
+//getUserByEmail("vin@gmail.com").then((a) => console.log(a)).catch((e) => console.error(e));
 
 app.get("/", (req, res) => {
     res.send("Api running OK...");
@@ -90,6 +101,36 @@ app.post("/signup", (req, res) => {
         
     });
 });
+
+app.post("/login", (req, res) => {
+    const user = req.body.user;
+
+    const email = user.map((e) => e.email)[0];
+    const password = user.map((e) => e.password)[0];
+
+    getUserByEmail(email).then((a) => {
+        if(a != null){
+            if(password == a.password){
+                console.log('Login succesful');
+                res.send(a);
+            }
+            else {
+                console.log('Incorrect password')
+                res.status(401);
+                res.json({msg: 'Incorrect password'});
+            }
+        }
+        else{
+            console.log('User does not exist')
+            res.status(404);
+            res.json({msg: 'User not found'});
+        }
+    }).catch((e) => {
+        console.error(e);
+        res.status(500);
+        res.json({msg: "Error connecting to DB"});
+    })
+})
 
 app.listen(port, () => {
     console.log(`> app listening on port ${port}`)
