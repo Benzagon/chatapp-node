@@ -75,7 +75,7 @@ export const login = (req, res) => {
         if(user == null) return res.status(404).json({msg: 'User not found'});
 
         const verifyPassword = await bcrypt.compare(password, user.password)
-        console.log(verifyPassword)
+  
         if(!verifyPassword) {
             console.log('Incorrect password');
             return res.status(401).json({msg: 'Incorrect password'});
