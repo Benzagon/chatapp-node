@@ -4,6 +4,8 @@ const express = require("express");
 const app = express();
 const cors = require('cors');
 
+const bcrypt = require("bcrypt")
+
 app.use(express.json());
 const port = process.env.PORT;
 
@@ -22,15 +24,17 @@ app.use(cors({
     corsOptions
 }));
 
-const { PrismaClient } = require('@prisma/client') 
-const prisma = new  PrismaClient()
+const { PrismaClient } = require('@prisma/client');
+const prisma = new  PrismaClient();
 
 async function createUser(name, email, password){
+    const hash = await bcrypt.hash(password, 10);
+
     const newUser = await prisma.user.create({
         data: {
             name: name,
             email: email,
-            password: password
+            password: hash,
         }
     });
 };
@@ -63,15 +67,7 @@ async function getUserByEmail(email) {
     });
     //Como puedo hacer que tire error?
     return user;
-}
-
-//createUser("Nai", "nai@gmail.com", "nailope").then((a) => console.log("Created user")).catch((e) => console.error(e));
-
-//deleteUser(2).then((a) => console.log(a)).catch((e) => console.error(e));
-
-//getUsers().then((a) => console.log(a)).catch((e) => console.error(e));
-
-//getUserByEmail("vin@gmail.com").then((a) => console.log(a)).catch((e) => console.error(e));
+};
 
 app.get("/", (req, res) => {
     res.send("Api running OK...");
@@ -100,28 +96,30 @@ app.post("/login", (req, res) => {
     const {email, password} = req.body;
 
     getUserByEmail(email).then((a) => {
-        if(a != null){
-            if(password == a.password){
-                console.log('Login succesful');
-                res.send(a);
-            }
-            else {
-                console.log('Incorrect password')
-                res.status(401);
-                res.json({msg: 'Incorrect password'});
-            }
-        }
-        else{
+        if(a == null){
             console.log('User does not exist')
             res.status(404);
             res.json({msg: 'User not found'});
+        }
+        else{
+            bcrypt.compare(password, a.password, function(err, result) {
+                if (result) {
+                    console.log('Login succesful');
+                    res.send(a);
+                }
+                else {
+                    console.log('Incorrect password')
+                    res.status(401);
+                    res.json({msg: 'Incorrect password'});
+                }
+            });
         }
     }).catch((e) => {
         console.error(e);
         res.status(500);
         res.json({msg: "Error connecting to DB"});
     })
-})
+});
 
 app.listen(port, () => {
     console.log(`> app listening on port ${port}`)
