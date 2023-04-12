@@ -5,7 +5,7 @@ import express from "express"
 const app = express();
 
 import cors from "cors";
-import { corsOptions }from "./config/cors.js";
+import { corsOptions } from "./config/cors.js";
 
 import userRoutes from "./routers/user.routes.js";
 

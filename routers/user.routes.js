@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { users, testApi, login, signup } from "../controllers/user.controllers.js";
+import { users, testApi, login, signup, deleteUser } from "../controllers/user.controllers.js";
 const router = Router();
 
 
@@ -10,5 +10,7 @@ router.get("/users", users);
 router.post("/signup", signup);
 
 router.post("/login", login);
+
+router.delete("/delete", deleteUser);
 
 export default router;

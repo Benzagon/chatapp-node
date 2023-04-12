@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new  PrismaClient();
 
 import bcrypt from "bcrypt";
+import { response } from 'express';
 
 async function createUser(name, email, password){
     const hash = await bcrypt.hash(password, 10);
@@ -15,13 +16,17 @@ async function createUser(name, email, password){
     });
 };
 
-async function deleteUser(id){
+async function deleteUserById(id){
     const deletedUser = await prisma.user.delete({
         where: {
-            id: id
-        }
+            id: id,
+        },
     });
-    return ("Deleted user " + id)
+    return ("User deleted: " + id)
+};
+
+export const deleteUser = (req, res) => {
+    deleteUserById(req.body.id).then((a) => res.send(a)).catch((e) => console.error(e));
 };
 
 async function getUsers() {
