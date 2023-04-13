@@ -11,6 +11,6 @@ router.post("/signup", signup);
 
 router.post("/login", login);
 
-router.delete("/delete", deleteUser); //En ves de por POST, conviene mandar el ID en la ruta
+router.delete("/delete/:id", deleteUser);
 
 export default router;
