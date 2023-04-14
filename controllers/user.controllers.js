@@ -50,13 +50,13 @@ async function getUserByEmail(email) {
     return user;
 };
 
-async function sendChat(message, sender, recipient){
-    const newMessage = await prisma.chat.create({
+async function createChat(message, sender, recipient){
+    const createChat = await prisma.chat.create({
         data: {
-            history: message
+            history: message,
+            users: sender
         }
     })
-    //const chat
 };
 
 export const testApi = (req, res) => {
