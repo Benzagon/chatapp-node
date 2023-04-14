@@ -25,10 +25,6 @@ async function deleteUserById(id){
     return ("User deleted: " + id)
 };
 
-export const deleteUser = (req, res) => {
-    deleteUserById(req.body.id).then((a) => res.send(a)).catch((e) => console.error(e));
-};
-
 async function getUsers() {
     const users = await prisma.user.findMany({
         select: {
@@ -103,4 +99,8 @@ export const login = (req, res) => {
         res.status(500);
         res.json({msg: "Error connecting to DB"});
     })
+};
+
+export const deleteUser = (req, res) => {
+    deleteUserById(parseInt(req.params.id)).then((a) => res.send(a)).catch((e) => console.error(e));
 };
