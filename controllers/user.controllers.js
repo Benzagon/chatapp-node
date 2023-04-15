@@ -30,7 +30,8 @@ async function getUsers() {
         select: {
             id: true,
             name: true,
-            email: true
+            email: true,
+            chats: true
         }
     });
     return users;
@@ -46,12 +47,19 @@ async function getUserByEmail(email) {
     return user;
 };
 
-async function createChat(message, sender, recipient){
+async function createChat(messages, id){
     const createChat = await prisma.chat.create({
         data: {
-            history: message,
-            users: sender
+            history: messages,
+            userId: id
         }
+    })
+    return ("Chat created with id: " + id)
+};
+
+async function getChatsByUser(){
+    const chats = await prisma.user.findMany({
+        include: {}
     })
 };
 
@@ -103,4 +111,12 @@ export const login = (req, res) => {
 
 export const deleteUser = (req, res) => {
     deleteUserById(parseInt(req.params.id)).then((a) => res.send(a)).catch((e) => console.error(e));
+};
+
+export const newChat = (req, res) => {
+    createChat(req.body.messages, req.body.id).then((a) => res.send(a)).catch((e) => console.error(e));
+};
+
+export const getChats = (req, res) => {
+    getChatsByUser().then((a) => res.send(a)).catch((e) => console.error(e));
 };

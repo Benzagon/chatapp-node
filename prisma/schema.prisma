@@ -16,11 +16,12 @@ model User {
   name String
   email String @unique
   password String
-  chats Chat[] @relation("UserToChat")
+  chats Chat[]
 }
 
 model Chat {
-  id Int @id @default(autoincrement())
   history String
-  users User[] @relation("UserToChat")
+
+  userId Int @unique
+  users User @relation(fields: [userId], references: [id])
 }
