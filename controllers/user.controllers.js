@@ -31,7 +31,6 @@ async function getUsers() {
             id: true,
             name: true,
             email: true,
-            chats: true
         }
     });
     return users;
