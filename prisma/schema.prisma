@@ -22,5 +22,5 @@ model User {
 model Chat {
   id Int @id @default(autoincrement())
   history String
-  users User[] @relation("UserToChat")
+  user User[] @relation("UserToChat")
 }

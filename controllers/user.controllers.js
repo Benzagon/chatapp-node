@@ -50,7 +50,7 @@ async function createChat(messages, id){
     const createChat = await prisma.chat.create({
         data: {
             history: messages,
-            userId: id
+            user: id
         }
     })
     return ("Chat created with id: " + id)
@@ -113,7 +113,7 @@ export const deleteUser = (req, res) => {
 };
 
 export const newChat = (req, res) => {
-    createChat(req.body.messages, req.body.id).then((a) => res.send(a)).catch((e) => console.error(e));
+    createChat(req.body.messages, req.body.ids).then((a) => res.send(a)).catch((e) => console.error(e));
 };
 
 export const getChats = (req, res) => {
