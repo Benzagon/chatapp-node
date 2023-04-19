@@ -46,15 +46,21 @@ async function getUserByEmail(email) {
     return user;
 };
 
-async function createChat(messages, id){
+async function createChat(sender, reciever, messages){
     const createChat = await prisma.chat.create({
         data: {
             history: messages,
-            user: id
+            user: {
+                connect: [
+                        {id: sender},
+                        {id: reciever}
+                ]
+            },
         }
     })
-    return ("Chat created with id: " + id)
 };
+
+createChat(5, 4, "Hola Mati Cohen")
 
 async function getChatsByUser(){
     const chats = await prisma.user.findMany({
