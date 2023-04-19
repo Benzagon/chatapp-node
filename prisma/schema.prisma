@@ -22,5 +22,14 @@ model User {
 model Chat {
   id Int @id @default(autoincrement())
   history String
+  messages Message[] 
   user User[] @relation("UserToChat")
+}
+
+model Message {
+ id Int @id @default(autoincrement())
+ text String
+ date DateTime @default(now())
+ senderId Int
+ chat Chat @relation(fields: [senderId], referances: )
 }

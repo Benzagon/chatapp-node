@@ -46,10 +46,10 @@ async function getUserByEmail(email) {
     return user;
 };
 
-async function createChat(sender, reciever, messages){
+async function createChat(sender, reciever){
     const createChat = await prisma.chat.create({
         data: {
-            history: messages,
+            history: '',
             user: {
                 connect: [
                         {id: sender},
@@ -60,13 +60,21 @@ async function createChat(sender, reciever, messages){
     })
 };
 
-createChat(5, 4, "Hola Mati Cohen")
-
-async function getChatsByUser(){
-    const chats = await prisma.user.findMany({
-        include: {}
+async function sendMessage(sender, reciever, message){
+    const updateHistory = await prisma.chat.update({
+        where: {
+            user: {
+                connect: [
+                    {id: sender},
+                    {id: reciever}
+                ]
+            }
+        },
+        data: {
+            history: ""
+        }
     })
-};
+}
 
 export const testApi = (req, res) => {
     res.send("Api running OK...");
@@ -119,8 +127,20 @@ export const deleteUser = (req, res) => {
 };
 
 export const newChat = (req, res) => {
-    createChat(req.body.messages, req.body.ids).then((a) => res.send(a)).catch((e) => console.error(e));
+    const {sender, reciever} = req.body;
+
+    createChat(sender, reciever).then((a) => {
+        console.log("Created chat between " + sender + " and " + reciever);
+    }).catch((e) => {
+        console.log(e);
+        res.status(500);
+        res.json({msg: "Error creating chat"});
+    });
 };
+
+export const sendMessage = (req, res) => {
+    const {sender, reciever, message} = req.body;
+}
 
 export const getChats = (req, res) => {
     getChatsByUser().then((a) => res.send(a)).catch((e) => console.error(e));

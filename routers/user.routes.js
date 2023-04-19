@@ -13,6 +13,6 @@ router.post("/login", login);
 
 router.delete("/delete/:id", deleteUser);
 
-router.post("/newChat", newChat);
+router.post("/create", newChat);
 
 export default router;

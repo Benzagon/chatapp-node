@@ -36,10 +36,10 @@ GET http://localhost:3001/chats HTTP/1.1
 
 ###
 
-POST http://localhost:3001/chat HTTP/1.1
+POST http://localhost:3001/create HTTP/1.1
 Content-Type: application/json
 
 {
-    "messages": "chat1",
-    "id": 5
+    "sender": 1,
+    "reciever": 5
 }
